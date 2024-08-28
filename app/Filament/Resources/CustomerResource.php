@@ -15,8 +15,8 @@ use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\CustomerResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\CustomerResource\RelationManagers;
-use App\Filament\Resources\Shop\CustomerResource\RelationManagers\PaymentsRelationManager;
-use App\Filament\Resources\Shop\CustomerResource\RelationManagers\AddressesRelationManager;
+use App\Filament\Resources\CustomerResource\RelationManagers\PaymentsRelationManager;
+use App\Filament\Resources\CustomerResource\RelationManagers\AddressesRelationManager;
 
 class CustomerResource extends Resource
 {

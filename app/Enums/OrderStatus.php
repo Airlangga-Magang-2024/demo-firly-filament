@@ -6,8 +6,6 @@ use Filament\Support\Contracts\HasColor;
 use Filament\Support\Contracts\HasIcon;
 use Filament\Support\Contracts\HasLabel;
 
-use function Laravel\Prompts\warning;
-
 enum OrderStatus: string implements HasColor, HasIcon, HasLabel
 {
     case New = 'new';
@@ -20,7 +18,7 @@ enum OrderStatus: string implements HasColor, HasIcon, HasLabel
 
     case Cancelled = 'cancelled';
 
-    public function getLabel(): ?string
+    public function getLabel(): string
     {
         return match ($this) {
             self::New => 'New',
@@ -31,7 +29,7 @@ enum OrderStatus: string implements HasColor, HasIcon, HasLabel
         };
     }
 
-    public function getColor(): string|array|null
+    public function getColor(): string | array | null
     {
         return match ($this) {
             self::New => 'info',

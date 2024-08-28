@@ -73,8 +73,10 @@ class Order extends Model
     protected static function booted()
     {
         static::saving(function (Order $order) {
+            // $order = $this->order;
             $order->total_price = $order->getTotalPriceAttribute();
-            $order->shipping_price = $order->getShippingPriceAttribute();
+            // $order->save();
+            // $order->shipping_price = $order->getShippingPriceAttribute();
         });
     }
 }

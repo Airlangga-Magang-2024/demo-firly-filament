@@ -110,7 +110,7 @@ class OrderResource extends Resource
                     ->summarize([
                         Tables\Columns\Summarizers\Sum::make()
                             ->money('idr')
-                            // ->format(fn($value) => number_format($value, 2, ',', '.')),
+                        // ->format(fn($value) => number_format($value, 2, ',', '.')),
                     ]),
 
                 Tables\Columns\TextColumn::make('shipping_price')
@@ -120,9 +120,9 @@ class OrderResource extends Resource
                     ->toggleable()
                     // ->formatStateUsing(fn($state) => number_format($state, 2, ',', '.'))
                     ->summarize([
-                        Tables\Columns\Summarizers\Sum::make()
-                            ->money('idr')
-                            // ->format(fn($value) => number_format($value, 2, ',', '.')),
+                        Tables\Columns\Summarizers\Sum::make('total_price')
+                            ->money('IDR')
+                        // ->format(fn($value) => number_format($value, 2, ',', '.')),
                     ]),
 
                 Tables\Columns\TextColumn::make('created_at')
@@ -278,7 +278,7 @@ class OrderResource extends Resource
                         ->required()
                         ->native(false),
                 ])
-                ->createOptionAction(function ( Action $action) {
+                ->createOptionAction(function (Action $action) {
                     return $action
                         ->modalHeading('Create Customer')
                         ->modalSubmitActionLabel('Create Customer')

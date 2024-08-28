@@ -2,27 +2,28 @@
 
 namespace App\Filament\Clusters\Products\Resources;
 
-use App\Filament\Clusters\Products;
-use App\Filament\Clusters\Products\Resources\BrandResource\RelationManagers\ProductsRelationManager;
-use App\Filament\Clusters\Products\Resources\ProductResource\Widgets\ProductStats;
-use App\Models\Shop\Product;
 use Filament\Forms;
-use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
-use Filament\Forms\Form;
-// use Filament\Notifications\Notification;
-use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Filters\QueryBuilder;
-use Filament\Tables\Filters\QueryBuilder\Constraints\BooleanConstraint;
-use Filament\Tables\Filters\QueryBuilder\Constraints\DateConstraint;
-use Filament\Tables\Filters\QueryBuilder\Constraints\NumberConstraint;
-use Filament\Tables\Filters\QueryBuilder\Constraints\TextConstraint;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Illuminate\Support\Str;
+use App\Models\Shop\Product;
+use Filament\Resources\Resource;
+// use Filament\Notifications\Notification;
+use App\Filament\Clusters\Products;
+use Illuminate\Database\Eloquent\Model;
+use Filament\Tables\Filters\QueryBuilder;
+use Illuminate\Database\Eloquent\Builder;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
+use Filament\Tables\Filters\QueryBuilder\Constraints\DateConstraint;
+use Filament\Tables\Filters\QueryBuilder\Constraints\TextConstraint;
+use Filament\Tables\Filters\QueryBuilder\Constraints\NumberConstraint;
 // use Filament\View\LegacyComponents\Widget;
 // use Filament\Widgets\Widget as WidgetsWidget;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Str;
+use Filament\Tables\Filters\QueryBuilder\Constraints\BooleanConstraint;
+use App\Filament\Clusters\Products\Resources\ProductResource\Widgets\ProductStats;
+use App\Filament\Clusters\Products\Resources\BrandResource\RelationManagers\ProductsRelationManager;
+use App\Filament\Clusters\Products\Resources\ProductResource\RelationManagers\CommentsRelationManager;
 
 class ProductResource extends Resource
 {
@@ -85,20 +86,26 @@ class ProductResource extends Resource
                                 Forms\Components\TextInput::make('price')
                                     ->numeric()
                                     ->rules(['regex:/^\d{1,6}(\.\d{0,2})?$/'])
-                                    ->required(),
+                                    ->required()
+                                    ->prefix('Rp ')
+                                    ->suffix(' IDR'),
 
                                 Forms\Components\TextInput::make('old_price')
                                     ->label('Compare at price')
                                     ->numeric()
                                     ->rules(['regex:/^\d{1,6}(\.\d{0,2})?$/'])
-                                    ->required(),
+                                    ->required()
+                                    ->prefix('Rp ')
+                                    ->suffix(' IDR'),
 
                                 Forms\Components\TextInput::make('cost')
                                     ->label('Cost per item')
                                     ->helperText('Customers won\'t see this price.')
                                     ->numeric()
                                     ->rules(['regex:/^\d{1,6}(\.\d{0,2})?$/'])
-                                    ->required(),
+                                    ->required()
+                                    ->prefix('Rp ')
+                                    ->suffix(' IDR'),
                             ])
                             ->columns(2),
                         Forms\Components\Section::make('Inventory')
@@ -161,6 +168,7 @@ class ProductResource extends Resource
                                 Forms\Components\Select::make('shop_brand_id')
                                     ->relationship('brand', 'name')
                                     ->searchable()
+                                    ->required()
                                     ->hiddenOn(ProductsRelationManager::class),
 
                                 Forms\Components\Select::make('categories')
@@ -200,7 +208,9 @@ class ProductResource extends Resource
                 Tables\Columns\TextColumn::make('price')
                     ->label('Price')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
+                    ->money('idr'), // Optional: If you want to use built-in money formatting
 
                 Tables\Columns\TextColumn::make('sku')
                     ->label('SKU')
@@ -270,7 +280,7 @@ class ProductResource extends Resource
     public static function getRelations(): array
     {
         return [
-            \App\Filament\Clusters\Products\Resources\ProductResource\RelationManagers\CommentsRelationManager::class,
+            CommentsRelationManager::class,
         ];
     }
 

@@ -2,19 +2,17 @@
 
 namespace App\Filament\Resources\OrderResource\Widgets;
 
-use App\Filament\Resources\OrderResource\Pages\ListOrders;
 use App\Models\Shop\Order;
-use Faker\Core\Number;
-use Filament\Tables\Concerns\InteractsWithTable;
-use Filament\Widgets\StatsOverviewWidget as BaseWidget;
-use Filament\Widgets\StatsOverviewWidget\Stat;
 use Flowframe\Trend\Trend;
 use Flowframe\Trend\TrendValue;
+use Filament\Widgets\StatsOverviewWidget\Stat;
+use Filament\Widgets\Concerns\InteractsWithPageTable;
+use Filament\Widgets\StatsOverviewWidget as BaseWidget;
+use App\Filament\Resources\OrderResource\Pages\ListOrders;
 
 class OrderStats extends BaseWidget
 {
-
-    use InteractsWithTable;
+    use InteractsWithPageTable;
 
     protected static ?string $pollingInterval = null;
 
@@ -34,14 +32,14 @@ class OrderStats extends BaseWidget
             ->count();
 
         return [
-            Stat::make('Orders', $this->getPageTableQuery()->count)
+            Stat::make('Orders', $this->getPageTableQuery()->count())
                 ->chart(
                     $orderData
-                        ->map(fn(TrendValue $value) => $value->aggregate)
+                        ->map(fn (TrendValue $value) => $value->aggregate)
                         ->toArray()
                 ),
-            Stat::make('Open Orders', $this->getPageTableQuery()->whereIn('status', ['open', 'processing'])->count()),
-            Stat::make('Average Price', number_format($this->getPageTableQuery()->avg('total_price'), 2)),
+            Stat::make('Open orders', $this->getPageTableQuery()->whereIn('status', ['open', 'processing'])->count()),
+            Stat::make('Average price', number_format($this->getPageTableQuery()->avg('total_price'), 2)),
         ];
     }
 }
