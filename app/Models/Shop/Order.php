@@ -57,18 +57,21 @@ class Order extends Model
 
     public function getTotalPriceAttribute(): float
     {
-        // return number_format(2, ',', '.'); // Format: ribuan titik, desimal koma
-        return $this->items->sum(function ($item) {
+        return (float) $this->items->sum(function ($item) {
             return $item->qty * $item->unit_price;
         });
     }
 
-    // public function getShippingPriceAttribute(): float
-    // {
-    //     return $this->items->sum(function ($item) {
-    //         return $item->qty * $item->unit_price;
-    //     });
-    // }
+    public function getShippingPriceAttribute(): float
+    {
+        // Calculate the total price first
+        $totalPrice = $this->items->sum(function ($item) {
+            return $item->qty * $item->unit_price;
+        });
+
+        // Return half of the total price for the shipping cost
+        return $totalPrice / 2;
+    }
 
     protected static function booted()
     {
@@ -76,7 +79,7 @@ class Order extends Model
             // $order = $this->order;
             $order->total_price = $order->getTotalPriceAttribute();
             // $order->save();
-            // $order->shipping_price = $order->getShippingPriceAttribute();
+            $order->shipping_price = $order->getShippingPriceAttribute();
         });
     }
 }

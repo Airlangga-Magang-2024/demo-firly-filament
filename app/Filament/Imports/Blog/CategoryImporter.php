@@ -14,7 +14,16 @@ class CategoryImporter extends Importer
     public static function getColumns(): array
     {
         return [
-            //
+            ImportColumn::make('name')
+                ->requiredMapping()
+                ->rules(['required', 'max:255']),
+            ImportColumn::make('sku')
+                ->label('SKU')
+                ->requiredMapping()
+                ->rules(['required', 'max:32']),
+            ImportColumn::make('price')
+                ->numeric()
+                ->rules(['numeric', 'min:0']),
         ];
     }
 

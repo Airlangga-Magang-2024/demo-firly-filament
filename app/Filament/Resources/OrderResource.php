@@ -25,6 +25,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\OrderResource\Widgets\OrderStats;
 use App\Filament\Clusters\Products\Resources\ProductResource;
 use App\Filament\Resources\OrderResource\RelationManagers\PaymentsRelationManager;
+use Filament\Tables\Columns\Summarizers\Sum;
 
 class OrderResource extends Resource
 {
@@ -106,24 +107,19 @@ class OrderResource extends Resource
                 Tables\Columns\TextColumn::make('total_price')
                     ->searchable()
                     ->sortable()
-                    // ->formatStateUsing(fn($state) => number_format($state, 2, ',', '.'))
-                    ->summarize([
-                        Tables\Columns\Summarizers\Sum::make()
-                            ->money('idr')
-                        // ->format(fn($value) => number_format($value, 2, ',', '.')),
-                    ]),
+                    ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
+                    ->money('idr') // Optional: If you want to use built-in money formatting
+                    ->summarize(Sum::make('')->money('IDR')),
 
                 Tables\Columns\TextColumn::make('shipping_price')
                     ->label('Shipping Cost')
+                    ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.'))
+                    ->money('idr') // Optional: If you want to use built-in money formatting
                     ->searchable()
                     ->sortable()
                     ->toggleable()
                     // ->formatStateUsing(fn($state) => number_format($state, 2, ',', '.'))
-                    ->summarize([
-                        Tables\Columns\Summarizers\Sum::make('total_price')
-                            ->money('IDR')
-                        // ->format(fn($value) => number_format($value, 2, ',', '.')),
-                    ]),
+                    ->summarize(Sum::make()->money('IDR')),
 
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Order Date')
